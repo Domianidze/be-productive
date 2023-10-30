@@ -15,7 +15,13 @@ function App(): JSX.Element {
     <SafeAreaView className="h-full bg-black">
       <StatusBar barStyle="light-content" />
       <NavigationContainer>
-        <Stack.Screen name="home" component={HomeScreen} />
+        <Stack.Navigator
+          screenOptions={{
+            headerShown: false,
+            contentStyle: {backgroundColor: 'black'},
+          }}>
+          <Stack.Screen name="home" component={HomeScreen} />
+        </Stack.Navigator>
       </NavigationContainer>
     </SafeAreaView>
   );
