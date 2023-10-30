@@ -3,8 +3,8 @@ import {SafeAreaView, StatusBar} from 'react-native';
 
 function App(): JSX.Element {
   return (
-    <SafeAreaView>
-      <StatusBar barStyle="dark-content" />
+    <SafeAreaView className="h-full bg-black">
+      <StatusBar barStyle="light-content" />
     </SafeAreaView>
   );
 }
