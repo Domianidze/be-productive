@@ -4,6 +4,7 @@ import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import moment from 'moment';
 import {StackParamList} from '@root/App';
 import DatePicker from './components/DatePicker';
+import TodoList from './components/TodoList';
 
 type TProps = NativeStackScreenProps<StackParamList, 'home'>;
 
@@ -11,8 +12,9 @@ const HomeScreen: React.FC<TProps> = () => {
   const [activeDate, setActiveDate] = React.useState<moment.Moment>(moment());
 
   return (
-    <View>
+    <View className="flex-1">
       <DatePicker activeDate={activeDate} setActiveDate={setActiveDate} />
+      <TodoList activeDate={activeDate} />
     </View>
   );
 };
