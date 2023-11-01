@@ -54,7 +54,12 @@ const DatePicker: React.FC<TProps> = ({activeDate, setActiveDate}) => {
               }`}
               onPress={datePressHandler.bind(this, item)}
               key={item.toString()}>
-              <Text className="text-xl font-bold">{item.date()}</Text>
+              <Text
+                className={`text-xl font-bold ${
+                  isActive ? 'text-white' : 'text-black'
+                }`}>
+                {item.date()}
+              </Text>
             </Pressable>
           );
         })}
