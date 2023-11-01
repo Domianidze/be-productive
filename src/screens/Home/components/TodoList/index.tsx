@@ -26,7 +26,7 @@ const TodoList: React.FC<TProps> = () => {
   return (
     <View className="p-2 flex-1">
       <Text className="pb-2 text-lg text-white font-bold">Todos:</Text>
-      <ScrollView className="relative">
+      <ScrollView className="relative" showsVerticalScrollIndicator={false}>
         {[...new Array(24)].map((_, index) => (
           <View key={index}>
             <View className="h-12 flex-row items-center">
