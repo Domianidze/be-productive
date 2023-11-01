@@ -19,16 +19,21 @@ const DeleteButton: React.FC<TProps> = ({id}) => {
       navigation.goBack();
     };
 
-    Alert.alert('Remove todo', 'Are you sure you want to remove this todo?', [
-      {
-        text: 'Cancel',
-      },
-      {
-        style: 'destructive',
-        text: 'Remove',
-        onPress,
-      },
-    ]);
+    Alert.alert(
+      'Remove todo',
+      'Are you sure you want to remove this todo?',
+      [
+        {
+          text: 'Cancel',
+        },
+        {
+          style: 'destructive',
+          text: 'Remove',
+          onPress,
+        },
+      ],
+      {userInterfaceStyle: 'dark'},
+    );
   };
 
   if (!id) {

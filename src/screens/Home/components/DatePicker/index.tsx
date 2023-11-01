@@ -37,7 +37,7 @@ const DatePicker: React.FC<TProps> = ({activeDate, setActiveDate}) => {
   return (
     <View className="p-2">
       <Text className="pb-2 text-lg text-white font-bold">
-        {activeDate.format('MMMM, Do, YYYY.')}
+        {activeDate.format('MMMM, YYYY.')}
       </Text>
       <ScrollView
         className="flex-row gap-4"
@@ -54,11 +54,11 @@ const DatePicker: React.FC<TProps> = ({activeDate, setActiveDate}) => {
               }`}
               onPress={datePressHandler.bind(this, item)}
               key={item.toString()}>
-              <Text
-                className={`text-xl font-bold ${
-                  isActive ? 'text-white' : 'text-black'
-                }`}>
-                {item.date()}
+              <Text className={`${isActive ? 'text-white' : 'text-black'}`}>
+                <Text className="text-xl font-bold">{item.date()}</Text>{' '}
+                <Text className="text-xs">
+                  {moment.weekdaysShort()[item.weekday()]}
+                </Text>
               </Text>
             </Pressable>
           );
