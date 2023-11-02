@@ -1,5 +1,6 @@
 import React from 'react';
-import {View, ScrollView, Text} from 'react-native';
+import {View, ScrollView, Text, Pressable} from 'react-native';
+import {useNavigation} from '@react-navigation/native';
 
 const DUMMY_TODOS = [
   {
@@ -23,6 +24,8 @@ type TProps = {
 };
 
 const TodoList: React.FC<TProps> = () => {
+  const navigation = useNavigation<any>();
+
   return (
     <View className="p-2 flex-1">
       <Text className="pb-2 text-lg text-white font-bold">Todos:</Text>
@@ -49,9 +52,10 @@ const TodoList: React.FC<TProps> = () => {
           const height = endTime - startTime;
 
           return (
-            <View
+            <Pressable
               className="absolute py-2 pl-12 w-full"
               style={{top: startTime * 96 + 24, height: height * 96}}
+              onPress={() => navigation.navigate('manage', {id: item.id})}
               key={item.id}>
               <View className="p-3 w-full h-full bg-blue-500 rounded-xl">
                 <Text className="pb-1 text-white font-bold">{item.title}</Text>
@@ -59,7 +63,7 @@ const TodoList: React.FC<TProps> = () => {
                   {item.startTime} - {item.endTime}
                 </Text>
               </View>
-            </View>
+            </Pressable>
           );
         })}
       </ScrollView>

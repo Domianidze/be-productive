@@ -8,7 +8,7 @@ const AddButton: React.FC = () => {
 
   return (
     <Pressable
-      className="absolute right-6 bottom-6 w-12 h-12 justify-center items-center bg-white rounded-xl"
+      className="absolute right-6 bottom-6 w-12 h-12 justify-center items-center bg-white rounded-lg"
       onPress={() => navigation.navigate('manage')}>
       <Entypo name="plus" size={20} />
     </Pressable>
