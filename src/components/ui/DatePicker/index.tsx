@@ -1,17 +1,29 @@
 import React from 'react';
 import {Appearance, Pressable, Text} from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import moment from 'moment';
+import moment = require('moment');
+import getTime from '@/util/getTime';
 
 type TProps = {
-  className?: string;
   placeholder?: string;
+  minimumDate?: Date;
   date: Date | undefined;
-  onChange: (date: Date) => void;
+  onChange: (date: Date | undefined) => void;
 };
 
-const UIDatePicker: React.FC<TProps> = ({placeholder, date, onChange}) => {
+const UIDatePicker: React.FC<TProps> = ({
+  placeholder,
+  minimumDate,
+  date,
+  onChange,
+}) => {
   const [open, setOpen] = React.useState<boolean>(false);
+
+  React.useEffect(() => {
+    if (minimumDate && date && minimumDate >= date) {
+      onChange(undefined);
+    }
+  }, [minimumDate, date, onChange]);
 
   return (
     <>
@@ -20,6 +32,7 @@ const UIDatePicker: React.FC<TProps> = ({placeholder, date, onChange}) => {
         mode="time"
         theme="auto"
         locale={'en_GB'}
+        minimumDate={minimumDate && moment(minimumDate).add(1, 'm').toDate()}
         textColor={Appearance.getColorScheme() === 'dark' ? 'white' : 'black'}
         open={open}
         date={date || new Date()}
@@ -35,7 +48,7 @@ const UIDatePicker: React.FC<TProps> = ({placeholder, date, onChange}) => {
         className="p-2 h-12 flex-1 justify-center bg-dark-800 rounded-md"
         onPress={setOpen.bind(this, true)}>
         <Text className={date ? 'text-white' : 'text-gray-500'}>
-          {date ? moment(date).format('HH:mm') : placeholder}
+          {date ? getTime(date) : placeholder}
         </Text>
       </Pressable>
     </>

@@ -1,15 +1,7 @@
 import React from 'react';
 import {View, ScrollView, Text, Pressable} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-
-const DUMMY_TODOS = [
-  {
-    id: 't1',
-    title: 'BeProductive: Create todo list',
-    startTime: '11:00',
-    endTime: '19:00',
-  },
-];
+import {DUMMY_TODOS} from '@/data/DUMMY_DATA';
 
 const formatTime = (time: string) => {
   const splitTime = time.split(':');
@@ -46,21 +38,21 @@ const TodoList: React.FC<TProps> = () => {
         ))}
 
         {DUMMY_TODOS.map(item => {
-          const startTime = formatTime(item.startTime);
-          const endTime = formatTime(item.endTime);
+          const start = formatTime(item.start);
+          const end = formatTime(item.end);
 
-          const height = endTime - startTime;
+          const height = end - start;
 
           return (
             <Pressable
               className="absolute py-2 pl-12 w-full"
-              style={{top: startTime * 96 + 24, height: height * 96}}
+              style={{top: start * 96 + 24, height: height * 96}}
               onPress={() => navigation.navigate('manage', {id: item.id})}
               key={item.id}>
               <View className="p-3 w-full h-full bg-blue-500 rounded-xl">
                 <Text className="pb-1 text-white font-bold">{item.title}</Text>
                 <Text className="text-white">
-                  {item.startTime} - {item.endTime}
+                  {item.start} - {item.end}
                 </Text>
               </View>
             </Pressable>
