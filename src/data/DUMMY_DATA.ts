@@ -1,8 +1,8 @@
 export const DUMMY_TODOS = [
   {
     id: 't1',
-    title: 'BeProductive: Create todo list',
-    start: '11:00',
-    end: '19:00',
+    todo: 'BeProductive: Create todo list',
+    start: new Date(new Date().setHours(11, 0)),
+    end: new Date(new Date().setHours(19, 0)),
   },
 ];

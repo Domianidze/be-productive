@@ -4,7 +4,6 @@ import {useNavigation} from '@react-navigation/native';
 import {DUMMY_TODOS} from '@/data/DUMMY_DATA';
 import UIInput from '@/components/ui/Input';
 import UIDatePicker from '@/components/ui/DatePicker';
-import getTime from '@/util/getTime';
 
 type TInputs = {
   todo?: string;
@@ -16,7 +15,7 @@ type TProps = {
   id?: string;
 };
 
-const ManageForm: React.FC<TProps> = () => {
+const ManageForm: React.FC<TProps> = ({id}) => {
   const navigation = useNavigation<any>();
 
   const [inputs, setInputs] = React.useState<TInputs>({
@@ -38,11 +37,11 @@ const ManageForm: React.FC<TProps> = () => {
         throw new Error('The todo field is required');
       }
 
-      if (!inputs?.start) {
+      if (!inputs.start) {
         throw new Error('The start field is required');
       }
 
-      if (!inputs?.end) {
+      if (!inputs.end) {
         throw new Error('The end field is required');
       }
 
@@ -50,21 +49,20 @@ const ManageForm: React.FC<TProps> = () => {
         throw new Error('The duration must be valid');
       }
 
-      const formattedTodo = {
-        ...inputs,
-        start: getTime(inputs.start),
-        end: getTime(inputs.end),
-      };
+      // Check for edit
+      const conflictedTodos = DUMMY_TODOS.filter(item => {
+        if (!inputs.start || !inputs.end || item.id === id) {
+          return false;
+        }
 
-      const conflictedTodos = DUMMY_TODOS.filter(
-        todo =>
-          (todo.start >= formattedTodo.start &&
-            todo.start <= formattedTodo.end) ||
-          (todo.end >= formattedTodo.start && todo.end <= formattedTodo.end),
-      );
+        return (
+          (item.start >= inputs.start && item.start <= inputs.end) ||
+          (item.end >= inputs.start && item.end <= inputs.end)
+        );
+      });
 
       if (conflictedTodos.length > 0) {
-        throw new Error('The duration must not be taken');
+        throw new Error('The duration must not conflict');
       }
 
       navigation.goBack();
@@ -73,12 +71,26 @@ const ManageForm: React.FC<TProps> = () => {
     }
   };
 
+  React.useEffect(() => {
+    const todo = DUMMY_TODOS.find(item => item.id === id);
+
+    if (!todo) {
+      return;
+    }
+
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const {id: _, ...updatedInputs} = todo;
+
+    setInputs(updatedInputs);
+  }, [id]);
+
   return (
     <View className="px-2 py-6 gap-6">
       <UIInput
         placeholder="Todo"
         value={inputs.todo}
         onChangeText={inputChangeHandler.bind(this, 'todo')}
+        className="font-bold"
       />
       <View className="flex-row gap-6">
         <UIDatePicker
