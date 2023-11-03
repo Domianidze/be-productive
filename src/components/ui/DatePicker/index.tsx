@@ -28,8 +28,9 @@ const UIDatePicker: React.FC<TProps> = ({
   React.useEffect(() => {
     if (minimumDate && date && minimumDate >= date) {
       onChange(undefined);
+      forwardedRef.current?.focus();
     }
-  }, [minimumDate, date, onChange]);
+  }, [minimumDate, date, onChange, forwardedRef]);
 
   return (
     <>

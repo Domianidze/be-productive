@@ -1,5 +1,12 @@
 import React from 'react';
-import {View, TextInput, Pressable, Text, Alert} from 'react-native';
+import {
+  View,
+  TextInput,
+  Pressable,
+  Text,
+  Alert,
+  GestureResponderEvent,
+} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {DUMMY_TODOS} from '@/data/DUMMY_DATA';
 import UIInput from '@/components/ui/Input';
@@ -34,32 +41,34 @@ const ManageForm: React.FC<TProps> = ({id}) => {
     }));
   };
 
-  const doneHandler = () => {
+  const doneHandler = (_?: GestureResponderEvent, end?: Date) => {
     try {
       if (!inputs.todo) {
-        throw new Error('The todo field is required');
+        throw new Error('Please fill out the "Todo" field');
       }
 
       if (!inputs.start) {
-        throw new Error('The start field is required');
+        throw new Error('Please fill out the "Start" field');
       }
 
-      if (!inputs.end) {
-        throw new Error('The end field is required');
+      const endTime = end || inputs.end;
+
+      if (!endTime) {
+        throw new Error('Please fill out the "End" field');
       }
 
-      if (inputs.end <= inputs.start) {
+      if (endTime <= inputs.start) {
         throw new Error('The duration must be valid');
       }
 
       const conflictedTodos = DUMMY_TODOS.filter(item => {
-        if (!inputs.start || !inputs.end || item.id === id) {
+        if (!inputs.start || !endTime || item.id === id) {
           return false;
         }
 
         return (
-          (item.start >= inputs.start && item.start <= inputs.end) ||
-          (item.end >= inputs.start && item.end <= inputs.end)
+          (item.start >= inputs.start && item.start <= endTime) ||
+          (item.end >= inputs.start && item.end <= endTime)
         );
       });
 
@@ -95,11 +104,18 @@ const ManageForm: React.FC<TProps> = ({id}) => {
         onChangeText={inputChangeHandler.bind(this, 'todo')}
         autoFocus={true}
         returnKeyType={inputs.start && inputs.end ? 'default' : 'next'}
-        onSubmitEditing={() =>
-          !inputs.start
-            ? startRef.current?.focus()
-            : !inputs.end && endRef.current?.focus()
-        }
+        onSubmitEditing={event => {
+          if (!event.nativeEvent.text) {
+            Alert.alert('Error', 'The "Todo" field is required');
+            return;
+          }
+
+          if (!inputs.start) {
+            startRef.current?.focus();
+          } else if (!inputs.end) {
+            endRef.current?.focus();
+          }
+        }}
       />
       <View className="flex-row gap-6">
         <UIDatePicker
@@ -108,10 +124,11 @@ const ManageForm: React.FC<TProps> = ({id}) => {
           placeholder="Start"
           date={inputs.start}
           onChange={date => {
+            inputChangeHandler('start', date);
+
             if (!inputs.end) {
-              inputChangeHandler('start', date);
+              endRef.current?.focus();
             }
-            endRef.current?.focus();
           }}
           forwardedRef={startRef}
         />
@@ -119,9 +136,16 @@ const ManageForm: React.FC<TProps> = ({id}) => {
         <UIDatePicker
           title="End"
           placeholder="End"
+          confirmText={inputs.todo && inputs.start ? 'Done' : 'Confirm'}
           minimumDate={inputs.start}
           date={inputs.end}
-          onChange={date => inputChangeHandler('end', date)}
+          onChange={date => {
+            inputChangeHandler('end', date);
+
+            if (inputs.todo && inputs.start) {
+              doneHandler(undefined, date);
+            }
+          }}
           forwardedRef={endRef}
         />
       </View>
