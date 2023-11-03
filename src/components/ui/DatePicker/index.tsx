@@ -1,21 +1,27 @@
 import React from 'react';
-import {Appearance, Pressable, Text} from 'react-native';
+import {Appearance, TextInput} from 'react-native';
 import DatePicker from 'react-native-date-picker';
-import moment = require('moment');
+import moment from 'moment';
 import getTime from '@/util/getTime';
 
 type TProps = {
+  title?: string;
+  confirmText?: string;
   placeholder?: string;
   minimumDate?: Date;
   date: Date | undefined;
   onChange: (date: Date | undefined) => void;
+  forwardedRef: React.RefObject<TextInput>;
 };
 
 const UIDatePicker: React.FC<TProps> = ({
+  title,
+  confirmText,
   placeholder,
   minimumDate,
   date,
   onChange,
+  forwardedRef,
 }) => {
   const [open, setOpen] = React.useState<boolean>(false);
 
@@ -31,7 +37,9 @@ const UIDatePicker: React.FC<TProps> = ({
         modal
         mode="time"
         theme="auto"
+        title={title}
         locale={'en_GB'}
+        confirmText={confirmText}
         minimumDate={minimumDate && moment(minimumDate).add(1, 'm').toDate()}
         textColor={Appearance.getColorScheme() === 'dark' ? 'white' : 'black'}
         open={open}
@@ -44,13 +52,18 @@ const UIDatePicker: React.FC<TProps> = ({
           setOpen(false);
         }}
       />
-      <Pressable
-        className="p-2 h-12 flex-1 justify-center bg-dark-800 rounded-md"
-        onPress={setOpen.bind(this, true)}>
-        <Text className={date ? 'text-white' : 'text-gray-500'}>
-          {date ? getTime(date) : placeholder}
-        </Text>
-      </Pressable>
+      <TextInput
+        className="p-2 h-12 flex-1 justify-center text-white bg-dark-800 rounded-md"
+        placeholderTextColor="rgb(107 114 128)"
+        placeholder={placeholder}
+        caretHidden={true}
+        value={date && getTime(date)}
+        onFocus={() => {
+          forwardedRef.current?.blur();
+          setOpen(true);
+        }}
+        ref={forwardedRef}
+      />
     </>
   );
 };

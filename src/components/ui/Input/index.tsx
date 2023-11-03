@@ -5,8 +5,8 @@ const UIInput: React.FC<TextInputProps> = props => {
   return (
     <TextInput
       {...props}
-      placeholderTextColor="rgb(107 114 128)"
       className={`p-2 h-12 text-white bg-dark-800 rounded-md ${props.className}`}
+      placeholderTextColor="rgb(107 114 128)"
     />
   );
 };

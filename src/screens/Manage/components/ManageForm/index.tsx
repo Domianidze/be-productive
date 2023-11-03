@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, Pressable, Text, Alert} from 'react-native';
+import {View, TextInput, Pressable, Text, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {DUMMY_TODOS} from '@/data/DUMMY_DATA';
 import UIInput from '@/components/ui/Input';
@@ -17,6 +17,9 @@ type TProps = {
 
 const ManageForm: React.FC<TProps> = ({id}) => {
   const navigation = useNavigation<any>();
+
+  const startRef = React.useRef<TextInput>(null);
+  const endRef = React.useRef<TextInput>(null);
 
   const [inputs, setInputs] = React.useState<TInputs>({
     todo: undefined,
@@ -49,7 +52,6 @@ const ManageForm: React.FC<TProps> = ({id}) => {
         throw new Error('The duration must be valid');
       }
 
-      // Check for edit
       const conflictedTodos = DUMMY_TODOS.filter(item => {
         if (!inputs.start || !inputs.end || item.id === id) {
           return false;
@@ -87,23 +89,40 @@ const ManageForm: React.FC<TProps> = ({id}) => {
   return (
     <View className="px-2 py-6 gap-6">
       <UIInput
+        className="font-bold"
         placeholder="Todo"
         value={inputs.todo}
         onChangeText={inputChangeHandler.bind(this, 'todo')}
-        className="font-bold"
+        autoFocus={true}
+        returnKeyType={inputs.start && inputs.end ? 'default' : 'next'}
+        onSubmitEditing={() =>
+          !inputs.start
+            ? startRef.current?.focus()
+            : !inputs.end && endRef.current?.focus()
+        }
       />
       <View className="flex-row gap-6">
         <UIDatePicker
+          title="Start"
+          confirmText={inputs.end ? 'Confirm' : 'Next'}
           placeholder="Start"
           date={inputs.start}
-          onChange={date => inputChangeHandler('start', date)}
+          onChange={date => {
+            if (!inputs.end) {
+              inputChangeHandler('start', date);
+            }
+            endRef.current?.focus();
+          }}
+          forwardedRef={startRef}
         />
         <View />
         <UIDatePicker
+          title="End"
           placeholder="End"
           minimumDate={inputs.start}
           date={inputs.end}
           onChange={date => inputChangeHandler('end', date)}
+          forwardedRef={endRef}
         />
       </View>
       <Pressable
