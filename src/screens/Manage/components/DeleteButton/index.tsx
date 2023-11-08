@@ -2,6 +2,7 @@ import React from 'react';
 import {Pressable, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
+import {deleteTodo} from '@/db';
 
 type TProps = {
   id?: string;
@@ -15,8 +16,14 @@ const DeleteButton: React.FC<TProps> = ({id}) => {
       return;
     }
 
-    const onPress = () => {
-      navigation.goBack();
+    const onPress = async () => {
+      try {
+        await deleteTodo(+id);
+
+        navigation.goBack();
+      } catch (error: any) {
+        console.error(error);
+      }
     };
 
     Alert.alert('Remove todo', 'Are you sure you want to remove this todo?', [

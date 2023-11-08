@@ -1,8 +1,9 @@
 import React from 'react';
 import {View, ScrollView, Text, Pressable} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
-import {DUMMY_TODOS} from '@/data/DUMMY_DATA';
+import {useNavigation, useIsFocused} from '@react-navigation/native';
+import {getTodos} from '@/db';
 import getTime from '@/util/getTime';
+import {TTodo} from '@/types/main';
 
 const formatDate = (date: Date) => {
   const splitTime = getTime(date).split(':');
@@ -18,6 +19,23 @@ type TProps = {
 
 const TodoList: React.FC<TProps> = () => {
   const navigation = useNavigation<any>();
+  const isFocused = useIsFocused();
+
+  const [todos, setTodos] = React.useState<TTodo[]>([]);
+
+  React.useEffect(() => {
+    const getData = async () => {
+      try {
+        const todosData = await getTodos();
+
+        setTodos(todosData);
+      } catch (error: any) {
+        console.error(error);
+      }
+    };
+
+    getData();
+  }, [isFocused]);
 
   return (
     <View className="p-2 flex-1">
@@ -38,7 +56,7 @@ const TodoList: React.FC<TProps> = () => {
           </View>
         ))}
 
-        {DUMMY_TODOS.map(item => {
+        {todos.map(item => {
           const start = formatDate(item.start);
           const end = formatDate(item.end);
 

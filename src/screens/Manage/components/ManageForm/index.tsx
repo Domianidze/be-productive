@@ -8,7 +8,7 @@ import {
   GestureResponderEvent,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
-import {DUMMY_TODOS} from '@/data/DUMMY_DATA';
+import {getTodos, getTodo, addTodo, editTodo} from '@/db';
 import UIInput from '@/components/ui/Input';
 import UIDatePicker from '@/components/ui/DatePicker';
 
@@ -41,7 +41,7 @@ const ManageForm: React.FC<TProps> = ({id}) => {
     }));
   };
 
-  const doneHandler = (_?: GestureResponderEvent, end?: Date) => {
+  const doneHandler = async (_?: GestureResponderEvent, end?: Date) => {
     try {
       if (!inputs.todo) {
         throw new Error('Please fill out the "Todo" field');
@@ -51,24 +51,27 @@ const ManageForm: React.FC<TProps> = ({id}) => {
         throw new Error('Please fill out the "Start" field');
       }
 
-      const endTime = end || inputs.end;
+      const endDate = end || inputs.end;
 
-      if (!endTime) {
+      if (!endDate) {
         throw new Error('Please fill out the "End" field');
       }
 
-      if (endTime <= inputs.start) {
+      if (endDate <= inputs.start) {
         throw new Error('The duration must be valid');
       }
 
-      const conflictedTodos = DUMMY_TODOS.filter(item => {
-        if (!inputs.start || !endTime || item.id === id) {
+      const todos = await getTodos();
+
+      const conflictedTodos = todos.filter(item => {
+        if (!inputs.start || !endDate || (id && item.id === +id)) {
           return false;
         }
 
         return (
-          (item.start >= inputs.start && item.start <= endTime) ||
-          (item.end >= inputs.start && item.end <= endTime)
+          (item.start >= inputs.start && item.start <= endDate) ||
+          (item.end >= inputs.start && item.end <= endDate) ||
+          (item.start <= inputs.start && item.end >= endDate)
         );
       });
 
@@ -76,23 +79,50 @@ const ManageForm: React.FC<TProps> = ({id}) => {
         throw new Error('The duration must not conflict');
       }
 
+      if (id) {
+        await editTodo({
+          id: +id,
+          todo: inputs.todo,
+          start: inputs.start,
+          end: endDate,
+        });
+      } else {
+        await addTodo({
+          todo: inputs.todo,
+          start: inputs.start,
+          end: endDate,
+        });
+      }
+
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('Error', error.message);
+      if (error.message) {
+        Alert.alert('Error', error.message);
+      } else {
+        console.error(error);
+      }
     }
   };
 
   React.useEffect(() => {
-    const todo = DUMMY_TODOS.find(item => item.id === id);
+    const preFillInputs = async () => {
+      if (!id) {
+        return;
+      }
 
-    if (!todo) {
-      return;
-    }
+      const todo = await getTodo(+id);
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const {id: _, ...updatedInputs} = todo;
+      if (!todo) {
+        return;
+      }
 
-    setInputs(updatedInputs);
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      const {id: _, ...updatedInputs} = todo;
+
+      setInputs(updatedInputs);
+    };
+
+    preFillInputs();
   }, [id]);
 
   return (
