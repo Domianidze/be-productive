@@ -64,15 +64,20 @@ const TodoList: React.FC<TProps> = () => {
 
           return (
             <Pressable
-              className="absolute py-2 pl-12 w-full"
-              style={{top: start * 96 + 24, height: height * 96}}
+              className="absolute pl-12 w-full"
+              style={{
+                top: start * 96 + 24,
+                height: Math.max(height, 0.45) * 96,
+              }}
               onPress={() => navigation.navigate('manage', {id: item.id})}
               key={item.id}>
               <View className="p-3 w-full h-full bg-blue-500 rounded-xl">
                 <Text className="pb-1 text-white font-bold">{item.todo}</Text>
-                <Text className="text-white">
-                  {getTime(item.start)} - {getTime(item.end)}
-                </Text>
+                {height >= 0.65 && (
+                  <Text className="text-white">
+                    {getTime(item.start)} - {getTime(item.end)}
+                  </Text>
+                )}
               </View>
             </Pressable>
           );
