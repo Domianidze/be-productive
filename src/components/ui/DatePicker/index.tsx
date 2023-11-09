@@ -40,6 +40,7 @@ const UIDatePicker: React.FC<TProps> = ({
         theme="auto"
         title={title}
         locale={'en_GB'}
+        is24hourSource="locale"
         confirmText={confirmText}
         minimumDate={minimumDate && moment(minimumDate).add(1, 'm').toDate()}
         textColor={Appearance.getColorScheme() === 'dark' ? 'white' : 'black'}

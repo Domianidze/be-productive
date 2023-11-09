@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, ScrollView, Pressable, Text} from 'react-native';
+import {View, ScrollView, Pressable, Text, Platform} from 'react-native';
 import moment from 'moment';
 
 type TProps = {
@@ -54,7 +54,10 @@ const DatePicker: React.FC<TProps> = ({activeDate, setActiveDate}) => {
               }`}
               onPress={datePressHandler.bind(this, item)}
               key={item.toString()}>
-              <Text className={`${isActive ? 'text-white' : 'text-black'}`}>
+              <Text
+                className={`${Platform.OS === 'android' && 'pt-1'} ${
+                  isActive ? 'text-white' : 'text-black'
+                }`}>
                 <Text className="text-xl font-bold">{item.date()}</Text>{' '}
                 <Text className="text-xs">
                   {moment.weekdaysShort()[item.weekday()]}

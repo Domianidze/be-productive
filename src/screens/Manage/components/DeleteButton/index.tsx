@@ -44,7 +44,7 @@ const DeleteButton: React.FC<TProps> = ({id}) => {
 
   return (
     <Pressable onPress={pressHandler}>
-      <Entypo name="trash" color={'rgb(239, 68, 68)'} size={20} />
+      <Entypo name="trash" color="rgb(239, 68, 68)" size={20} />
     </Pressable>
   );
 };

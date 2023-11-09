@@ -40,7 +40,7 @@ function App(): JSX.Element {
 
   return (
     <SafeAreaView className="h-full bg-black">
-      <StatusBar barStyle="light-content" />
+      <StatusBar barStyle="light-content" backgroundColor="black" />
       <NavigationContainer theme={DarkTheme}>
         <Stack.Navigator
           screenOptions={{headerTitleStyle: {fontWeight: 'bold'}}}>
