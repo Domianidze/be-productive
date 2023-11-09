@@ -6,6 +6,8 @@ import {createTodosTable} from '@/db';
 import HomeScreen from '@/screens/Home';
 import ManageScreen from '@/screens/Manage';
 
+import notifee from '@notifee/react-native';
+
 export type StackParamList = {
   home: undefined;
   manage: {id?: string};
@@ -23,7 +25,17 @@ function App(): JSX.Element {
       }
     };
 
+    const setupNotifications = async () => {
+      await notifee.requestPermission();
+
+      await notifee.createChannel({
+        id: 'default',
+        name: 'Default Channel',
+      });
+    };
+
     createTables();
+    setupNotifications();
   }, []);
 
   return (

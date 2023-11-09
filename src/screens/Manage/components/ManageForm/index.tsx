@@ -8,9 +8,11 @@ import {
   GestureResponderEvent,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import moment from 'moment';
 import {getTodos, getTodo, addTodo, editTodo} from '@/db';
 import UIInput from '@/components/ui/Input';
 import UIDatePicker from '@/components/ui/DatePicker';
+import createTriggerNotification from '@/util/createTriggerNotification';
 
 type TInputs = {
   todo?: string;
@@ -93,6 +95,17 @@ const ManageForm: React.FC<TProps> = ({id}) => {
           end: endDate,
         });
       }
+
+      const notificationDate =
+        inputs.start.getMinutes() - new Date().getMinutes() >= 10
+          ? moment(inputs.start).subtract(10, 'm').toDate()
+          : moment(new Date()).add(1, 'm').toDate();
+
+      await createTriggerNotification({
+        title: 'Todo starting',
+        body: `The "${inputs.todo}" todo is starting!`,
+        date: notificationDate,
+      });
 
       navigation.goBack();
     } catch (error: any) {
