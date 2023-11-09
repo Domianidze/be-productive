@@ -8,6 +8,7 @@ type TProps = NativeStackScreenProps<StackParamList, 'manage'>;
 
 const ManageScreen: React.FC<TProps> = ({navigation, route}) => {
   const id = route?.params?.id;
+  console.log(id);
 
   React.useLayoutEffect(() => {
     const headerRight: React.FC = () => {

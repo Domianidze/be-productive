@@ -2,6 +2,7 @@ import React from 'react';
 import {Pressable, Alert} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import Entypo from 'react-native-vector-icons/Entypo';
+import notifee from '@notifee/react-native';
 import {deleteTodo} from '@/db';
 
 type TProps = {
@@ -19,6 +20,8 @@ const DeleteButton: React.FC<TProps> = ({id}) => {
     const onPress = async () => {
       try {
         await deleteTodo(+id);
+
+        await notifee.cancelTriggerNotification(id.toString());
 
         navigation.goBack();
       } catch (error: any) {

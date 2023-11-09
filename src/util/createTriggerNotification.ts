@@ -1,10 +1,12 @@
 import notifee, {TimestampTrigger, TriggerType} from '@notifee/react-native';
 
 const createTriggerNotification = async ({
+  id,
   title,
   body,
   date,
 }: {
+  id: string;
   title: string;
   body: string;
   date: Date;
@@ -16,8 +18,9 @@ const createTriggerNotification = async ({
 
   await notifee.createTriggerNotification(
     {
-      title: title,
-      body: body,
+      id,
+      title,
+      body,
       android: {
         channelId: 'default',
         pressAction: {

@@ -8,6 +8,7 @@ import {
   GestureResponderEvent,
 } from 'react-native';
 import {useNavigation} from '@react-navigation/native';
+import notifee from '@notifee/react-native';
 import moment from 'moment';
 import {getTodos, getTodo, addTodo, editTodo} from '@/db';
 import UIInput from '@/components/ui/Input';
@@ -88,24 +89,34 @@ const ManageForm: React.FC<TProps> = ({id}) => {
           start: inputs.start,
           end: endDate,
         });
+
+        await notifee.cancelTriggerNotification(id.toString());
       } else {
-        await addTodo({
+        const todo = await addTodo({
           todo: inputs.todo,
           start: inputs.start,
           end: endDate,
         });
+
+        id = todo[0].insertId.toString();
       }
 
-      const notificationDate =
-        inputs.start.getMinutes() - new Date().getMinutes() >= 10
-          ? moment(inputs.start).subtract(10, 'm').toDate()
-          : moment(new Date()).add(1, 'm').toDate();
+      const minutesUntilTodo =
+        (inputs.start.getTime() - new Date().getTime()) / 60000;
 
-      await createTriggerNotification({
-        title: 'Todo starting',
-        body: `The "${inputs.todo}" todo is starting!`,
-        date: notificationDate,
-      });
+      if (id && minutesUntilTodo > 0) {
+        const notificationDate =
+          minutesUntilTodo >= 10
+            ? moment(inputs.start).subtract(10, 'm').toDate()
+            : moment(new Date()).add(1, 'm').toDate();
+
+        await createTriggerNotification({
+          id,
+          title: 'Todo starting',
+          body: `The "${inputs.todo}" todo is starting!`,
+          date: notificationDate,
+        });
+      }
 
       navigation.goBack();
     } catch (error: any) {
