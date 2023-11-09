@@ -41,13 +41,16 @@ const TodoList: React.FC<TProps> = () => {
     <View className="p-2 flex-1">
       <Text className="pb-2 text-lg text-white font-bold">Todos:</Text>
       <ScrollView className="relative" showsVerticalScrollIndicator={false}>
-        {[...new Array(24)].map((_, index) => (
+        {[...new Array(25)].map((_, index) => (
           <View key={index}>
-            <View className="h-12 flex-row items-center">
-              <Text className="w-12 text-white font-bold">{index}:00</Text>
+            <View
+              className={`h-12 flex-row items-center ${index >= 24 && 'pb-1'}`}>
+              <Text className="w-12 text-white font-bold">
+                {index < 24 ? `${index}:00` : '23:59'}
+              </Text>
               <View className="h-[1px] w-full bg-white rounded-full" />
             </View>
-            {index < 23 && (
+            {index < 24 && (
               <View className="h-12 flex-row items-center">
                 <Text className="w-12 text-gray-500 font-bold">{index}:30</Text>
                 <View className="h-[1px] w-full bg-gray-500 rounded-full" />
