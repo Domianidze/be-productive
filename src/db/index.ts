@@ -37,6 +37,8 @@ export const getTodos = async (): Promise<TTodo[]> => {
   const db = await getDB();
 
   try {
+    await createTodosTable();
+
     const response = await db.executeSql('SELECT * FROM todos');
 
     const results = response[0].rows.raw();

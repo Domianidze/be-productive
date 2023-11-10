@@ -4,7 +4,6 @@ import {NavigationContainer, DarkTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import SplashScreen from 'react-native-splash-screen';
 import notifee from '@notifee/react-native';
-import {createTodosTable} from '@/db';
 import HomeScreen from '@/screens/Home';
 import ManageScreen from '@/screens/Manage';
 
@@ -21,14 +20,6 @@ function App(): JSX.Element {
       SplashScreen.hide();
     }
 
-    const createTables = async () => {
-      try {
-        await createTodosTable();
-      } catch (error: any) {
-        console.error(error);
-      }
-    };
-
     const setupNotifications = async () => {
       await notifee.requestPermission();
 
@@ -38,7 +29,6 @@ function App(): JSX.Element {
       });
     };
 
-    createTables();
     setupNotifications();
   }, []);
 
