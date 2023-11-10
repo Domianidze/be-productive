@@ -112,8 +112,8 @@ const ManageForm: React.FC<TProps> = ({id}) => {
 
         await createTriggerNotification({
           id,
-          title: 'Todo starting',
-          body: `The "${inputs.todo}" todo is starting!`,
+          title: 'Todo starting soon',
+          body: `The "${inputs.todo}" todo is starting soon!`,
           date: notificationDate,
         });
       }
