@@ -1,12 +1,12 @@
 import React from 'react';
-import {SafeAreaView, StatusBar} from 'react-native';
+import {SafeAreaView, StatusBar, Platform} from 'react-native';
 import {NavigationContainer, DarkTheme} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import SplashScreen from 'react-native-splash-screen';
+import notifee from '@notifee/react-native';
 import {createTodosTable} from '@/db';
 import HomeScreen from '@/screens/Home';
 import ManageScreen from '@/screens/Manage';
-
-import notifee from '@notifee/react-native';
 
 export type StackParamList = {
   home: undefined;
@@ -17,6 +17,10 @@ const Stack = createNativeStackNavigator<StackParamList>();
 
 function App(): JSX.Element {
   React.useEffect(() => {
+    if (Platform.OS === 'android') {
+      SplashScreen.hide();
+    }
+
     const createTables = async () => {
       try {
         await createTodosTable();
