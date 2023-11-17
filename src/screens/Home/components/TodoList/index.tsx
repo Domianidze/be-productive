@@ -17,7 +17,7 @@ type TProps = {
   activeDate: moment.Moment;
 };
 
-const TodoList: React.FC<TProps> = () => {
+const TodoList: React.FC<TProps> = ({activeDate}) => {
   const navigation = useNavigation<any>();
   const isFocused = useIsFocused();
 
@@ -26,7 +26,7 @@ const TodoList: React.FC<TProps> = () => {
   React.useEffect(() => {
     const getData = async () => {
       try {
-        const todosData = await getTodos();
+        const todosData = await getTodos(activeDate.day());
 
         setTodos(todosData);
       } catch (error: any) {
@@ -35,7 +35,7 @@ const TodoList: React.FC<TProps> = () => {
     };
 
     getData();
-  }, [isFocused]);
+  }, [isFocused, activeDate]);
 
   return (
     <View className="p-2 flex-1">

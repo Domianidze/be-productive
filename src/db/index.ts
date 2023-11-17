@@ -24,6 +24,7 @@ export const createTodosTable = async () => {
       `CREATE TABLE IF NOT EXISTS todos (
           id INTEGER PRIMARY KEY NOT NULL,
           todo TEXT NOT NULL,
+          day INTEGER NOT NULL,
           start TEXT NOT NULL,
           end TEXT NOT NULL
       )`,
@@ -33,13 +34,15 @@ export const createTodosTable = async () => {
   }
 };
 
-export const getTodos = async (): Promise<TTodo[]> => {
+export const getTodos = async (day: number): Promise<TTodo[]> => {
   const db = await getDB();
 
   try {
     await createTodosTable();
 
-    const response = await db.executeSql('SELECT * FROM todos');
+    const response = await db.executeSql('SELECT * FROM todos WHERE day=?', [
+      day,
+    ]);
 
     const results = response[0].rows.raw();
 
@@ -90,8 +93,8 @@ export const addTodo = async ({
 
   try {
     const result = await db.executeSql(
-      'INSERT INTO todos (todo, start, end) VALUES (?, ?, ?)',
-      [todo, start.toISOString(), end.toISOString()],
+      'INSERT INTO todos (todo, day, start, end) VALUES (?, ?, ?, ?, ?)',
+      [todo, start.getDay(), start.toISOString(), end.toISOString()],
     );
 
     return result;
